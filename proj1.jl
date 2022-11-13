@@ -81,6 +81,29 @@ let
 	plt = scatter(df_k2_filtered.disc_year,df_k2_filtered.discoverymethod, label=:none, xlabel="Period (d)", ylabel = "λ (degrees)", xscale=:log10)
 end
 
+# ╔═╡ 1b9a00fa-456f-4c4c-a595-2f01d4d4ab26
+begin
+	target = "Kepler-16"
+	author="Kepler"
+end
+
+# ╔═╡ 5a6ab3ee-b3ec-4644-afa8-465af3b52d07
+search_result=lk.search_lightcurve(target,author=author)
+
+# ╔═╡ 398b7002-6faa-448c-b0d9-f5869383870a
+lc=search_result.download()
+
+# ╔═╡ dd29418c-718d-4dde-8836-0699fffcb350
+let
+	plt = scatter(lc.time[:value],lc.flux[:value], label="PLOT?", xlabel="Time", ylabel = "Flux")
+end
+
+# ╔═╡ 6165cfdf-92af-4326-841f-87ff132dc419
+pixelfile = lk.search_targetpixelfile("Trappist-1")[1].download()
+
+# ╔═╡ 6b2eaa54-2e54-4d4b-ac58-37b009b2b8a9
+lightcurve = pixelfile.to_lightcurve(method="pld").remove_outliers().flatten().scatter()
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -93,8 +116,22 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoTest = "cb4044da-4d16-4ffa-a6a3-8cad7f73ebdc"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 Query = "1a8c2f83-1ff3-5112-b086-8aa67b057ba1"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+
+[compat]
+CSV = "~0.10.7"
+ColorSchemes = "~3.19.0"
+DataFrames = "~1.4.1"
+HTTP = "~1.5.1"
+Plots = "~1.35.5"
+PlutoTeachingTools = "~0.2.3"
+PlutoTest = "~0.2.2"
+PlutoUI = "~0.7.48"
+PyCall = "~1.94.1"
+Query = "~1.0.0"
+StatsBase = "~0.33.21"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -199,6 +236,12 @@ version = "4.3.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+
+[[deps.Conda]]
+deps = ["Downloads", "JSON", "VersionParsing"]
+git-tree-sha1 = "6e47d11ea2776bc5627421d59cdcc1296c058071"
+uuid = "8f4d0f93-b110-5947-807f-2305c1781a2d"
+version = "1.7.0"
 
 [[deps.Contour]]
 git-tree-sha1 = "d05d9e7b7aedff4e5b51a029dced05cfb6125781"
@@ -774,11 +817,17 @@ version = "2.1.2"
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
+[[deps.PyCall]]
+deps = ["Conda", "Dates", "Libdl", "LinearAlgebra", "MacroTools", "Serialization", "VersionParsing"]
+git-tree-sha1 = "53b8b07b721b77144a0fbbbc2675222ebf40a02d"
+uuid = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+version = "1.94.1"
+
 [[deps.Qt5Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "c6c0f690d0cc7caddb74cef7aa847b824a16b256"
+git-tree-sha1 = "0c03844e2231e12fda4d0086fd7cbe4098ee8dc5"
 uuid = "ea2cea3b-5b76-57ae-a6ef-0a8af62496e1"
-version = "5.15.3+1"
+version = "5.15.3+2"
 
 [[deps.Query]]
 deps = ["DataValues", "IterableTables", "MacroTools", "QueryOperators", "Statistics"]
@@ -984,6 +1033,11 @@ version = "0.4.1"
 git-tree-sha1 = "ca0969166a028236229f63514992fc073799bb78"
 uuid = "41fe7b60-77ed-43a1-b4f0-825fd5a5650d"
 version = "0.2.0"
+
+[[deps.VersionParsing]]
+git-tree-sha1 = "58d6e80b4ee071f5efd07fda82cb9fbe17200868"
+uuid = "81def892-9a0e-5fdd-b105-ffc91e053289"
+version = "1.3.0"
 
 [[deps.Wayland_jll]]
 deps = ["Artifacts", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
@@ -1230,5 +1284,11 @@ version = "1.4.1+0"
 # ╠═b55a445d-d2ad-4c88-8252-fc7c3662612e
 # ╠═df11e515-2254-4c91-a5bb-bad304fd94f6
 # ╠═cadbfdba-3a07-4201-b60a-056d93250492
+# ╠═1b9a00fa-456f-4c4c-a595-2f01d4d4ab26
+# ╠═5a6ab3ee-b3ec-4644-afa8-465af3b52d07
+# ╠═398b7002-6faa-448c-b0d9-f5869383870a
+# ╠═dd29418c-718d-4dde-8836-0699fffcb350
+# ╠═6165cfdf-92af-4326-841f-87ff132dc419
+# ╠═6b2eaa54-2e54-4d4b-ac58-37b009b2b8a9
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
